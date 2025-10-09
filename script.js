@@ -218,13 +218,14 @@ document.addEventListener("click",e=>{
   }
 })
 
-// Job search functionality on home page
+// Job search functionality in header
 const jobSearchInput=document.getElementById("jobSearchInput")
 const jobSearchResults=document.getElementById("jobSearchResults")
 if(jobSearchInput && jobSearchResults){
   jobSearchInput.addEventListener("input",e=>{
     const query=e.target.value.toLowerCase().trim()
     if(query.length<2){
+      jobSearchResults.style.display="none"
       jobSearchResults.innerHTML=""
       return
     }
@@ -239,12 +240,13 @@ if(jobSearchInput && jobSearchResults){
       })
     })
     if(matches.length===0){
-      jobSearchResults.innerHTML='<p style="color:#2c3e50;font-size:14px;">No jobs found matching your search.</p>'
+      jobSearchResults.style.display="block"
+      jobSearchResults.innerHTML='<p style="color:#2c3e50;font-size:14px;padding:12px;">No jobs found matching your search.</p>'
       return
     }
-    let html='<div style="display:grid;gap:8px;">'
+    let html='<div style="padding:8px;">'
     matches.forEach(match=>{
-      html+=`<div style="background:rgba(255,255,255,0.08);padding:10px;border-radius:8px;border:1px solid rgba(139,69,19,0.15);">
+      html+=`<div style="background:#f9f9f9;padding:10px;border-radius:6px;margin-bottom:8px;border:1px solid #ddd;">
         <div style="font-weight:600;color:#8B4513;">${match.job}</div>
         <div style="font-size:13px;color:#2c3e50;margin:2px 0;">${match.company}</div>
         <div style="font-size:12px;color:#A0522D;">${match.location} • ${match.type}</div>
@@ -253,5 +255,21 @@ if(jobSearchInput && jobSearchResults){
     })
     html+='</div>'
     jobSearchResults.innerHTML=html
+    jobSearchResults.style.display="block"
+  })
+  jobSearchInput.addEventListener("focus",()=>{
+    if(jobSearchInput.value.trim().length>=2){
+      jobSearchResults.style.display="block"
+    }
+  })
+  document.addEventListener("click",e=>{
+    if(!jobSearchInput.contains(e.target)&&!jobSearchResults.contains(e.target)){
+      jobSearchResults.style.display="none"
+    }
   })
 }
+
+// Auto-load companies on page load
+window.addEventListener("load",()=>{
+  setTimeout(loadCompaniesAndJobs,500)
+})

@@ -95,10 +95,11 @@
   }
 </style>
 
-<form class="search-bar" action="#">
-  <input type="text" placeholder="Search...">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
+<div class="search-bar">
+  <input type="text" id="jobSearchInput" placeholder="Search jobs or companies...">
+  <button type="button"><i class="fa fa-search"></i></button>
+  <div id="jobSearchResults" style="position:absolute;top:50px;right:20px;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:400px;max-height:400px;overflow-y:auto;z-index:100;display:none;"></div>
+</div>
     <nav class="navbar">
       <a data-page="home">Home</a>
       <a data-page="careers">Careers</a>
@@ -140,12 +141,6 @@
         </div>
         <div class="results" id="results" aria-live="polite"></div>
         
-        <!-- Job Search Section -->
-        <div style="margin-top:20px;padding:16px;background:rgba(255,255,255,0.05);border-radius:12px;border:1px solid rgba(139,69,19,0.2);">
-          <h3 style="margin:0 0 12px 0;color:#8B4513;">🔍 Search Jobs by Company</h3>
-          <input type="text" id="jobSearchInput" placeholder="Search companies or job titles..." style="width:100%;padding:10px;border:1px solid rgba(139,69,19,0.3);border-radius:8px;margin-bottom:12px;background:rgba(255,255,255,0.9);color:#2c3e50;">
-          <div id="jobSearchResults"></div>
-        </div>
       </div>
     </section>
 
