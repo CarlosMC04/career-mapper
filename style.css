@@ -2,8 +2,8 @@
   --bg: #5a76b0;
   --panel: #071a2f;
   --card: #0f1724;
-  --accent: #000000;
-  --muted: #000000;
+  --accent: #8B4513;
+  --muted: #2c3e50;
   --glass: rgba(255, 255, 255, 0.03);
 }
 
@@ -51,7 +51,7 @@ body {
 
 .brand {
   font-weight: 700;
-  color: ;
+  color: #2c3e50;
   font-size: 20px;
 }
 
@@ -143,15 +143,16 @@ body {
 
 label {
   font-size: 13px;
-  color: #A0522D;
+  color: #8B4513;
+  font-weight: 600;
 }
 
 input {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(139, 69, 19, 0.3);
   padding: 8px;
   border-radius: 8px;
-  color: var(--muted);
+  color: #2c3e50;
   outline: none;
 }
 
@@ -191,7 +192,7 @@ button {
 #loginBtn,
 #forgotBtn {
   background: var(--accent);
-  color: #0410291c;
+  color: #ffffff;
 }
 
 /* === CHART AREA === */
@@ -229,7 +230,7 @@ button {
 
 .meta {
   font-size: 13px;
-  color: #080709e8;
+  color: #8B4513;
   font-style: italic;
   margin-top: 6px;
 }
