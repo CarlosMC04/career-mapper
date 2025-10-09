@@ -5,6 +5,14 @@ const careers=[
   {title:"Business Analyst",degrees:["Business","Management","Economics"],requiredSkills:["Requirements Elicitation","Process Modeling","Communication","Stakeholder Management"],description:"Translate business needs into technical requirements"},
   {title:"Digital Marketer",degrees:["Marketing","Communications","Business"],requiredSkills:["SEO","Content Creation","Analytics","Paid Ads"],description:"Grow brands through digital channels"}
 ]
+
+const mockCompanies=[
+  {id:1,name:"Omnaly Digital",tagline:"Omni + Analyze",description:"A full-service digital solutions firm focused on insight-driven innovation",jobs:[{title:"Data Analyst",location:"Remote",type:"Full-time"},{title:"UX Designer",location:"Hybrid",type:"Full-time"}]},
+  {id:2,name:"Nexora Solutions",tagline:"Next-Generation Software",description:"Modern, tech-forward, and professional; suggests next-generation software and strategy",jobs:[{title:"Software Developer",location:"On-site",type:"Full-time"},{title:"Business Analyst",location:"Remote",type:"Contract"}]},
+  {id:3,name:"Versalytics",tagline:"Versatile + Analytics",description:"Perfect for a company bridging data, UX, and marketing intelligence",jobs:[{title:"Data Analyst",location:"Remote",type:"Full-time"},{title:"Digital Marketer",location:"Hybrid",type:"Part-time"}]},
+  {id:4,name:"PixelPath Studio",tagline:"Design Direction & Data",description:"Creative and UX-oriented; implies clear design direction and data-informed experiences",jobs:[{title:"UX Designer",location:"On-site",type:"Full-time"},{title:"Software Developer",location:"Hybrid",type:"Full-time"}]},
+  {id:5,name:"CoreAxis Digital",tagline:"Strategy & Precision",description:"Evokes strategy, precision, and balance — ideal for a data-driven business consultancy",jobs:[{title:"Business Analyst",location:"Remote",type:"Full-time"},{title:"Data Analyst",location:"On-site",type:"Full-time"}]}
+]
 const form=document.getElementById("profileForm")
 const resultsEl=document.getElementById("results")
 const chartEl=document.getElementById("skillChart")
@@ -125,4 +133,125 @@ window.addEventListener("load",()=>{
 })
 if(burgerBtn && leftPanel){
   burgerBtn.addEventListener("click",()=>{leftPanel.classList.toggle("show")})
+}
+
+// Load companies and jobs
+function loadCompaniesAndJobs(){
+  const jobsList=document.getElementById("jobsList")
+  if(!jobsList)return
+  jobsList.innerHTML=""
+  mockCompanies.forEach(company=>{
+    const companyCard=document.createElement("div")
+    companyCard.className="company-card"
+    companyCard.style.cssText="background:rgba(255,255,255,0.05);padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid rgba(139,69,19,0.2);"
+    let jobsHTML=""
+    company.jobs.forEach((job,idx)=>{
+      jobsHTML+=`<div class="job-item" style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;margin-top:8px;border:1px solid rgba(139,69,19,0.15);">
+        <h4 style="margin:0;color:#8B4513;">${job.title}</h4>
+        <div style="font-size:13px;color:#2c3e50;margin:4px 0;">${job.location} • ${job.type}</div>
+        <button class="applyJobBtn" data-company="${company.name}" data-job="${job.title}" style="margin-top:8px;padding:6px 12px;background:#8B4513;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">Apply Now</button>
+      </div>`
+    })
+    companyCard.innerHTML=`<h3 style="margin:0;color:#8B4513;">${company.name}</h3>
+      <div style="font-size:13px;color:#A0522D;font-style:italic;margin:4px 0;">${company.tagline}</div>
+      <p style="color:#2c3e50;font-size:14px;margin:8px 0;">${company.description}</p>
+      <div style="margin-top:12px;">${jobsHTML}</div>`
+    jobsList.appendChild(companyCard)
+  })
+}
+
+// Handle job application with CV upload
+document.addEventListener("click",e=>{
+  if(e.target.classList.contains("applyJobBtn")){
+    const company=e.target.getAttribute("data-company")
+    const job=e.target.getAttribute("data-job")
+    showApplicationModal(company,job)
+  }
+})
+
+function showApplicationModal(company,job){
+  const existingModal=document.getElementById("applicationModal")
+  if(existingModal)existingModal.remove()
+  const modal=document.createElement("div")
+  modal.id="applicationModal"
+  modal.style.cssText="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;"
+  modal.innerHTML=`<div style="background:#fff;padding:24px;border-radius:12px;max-width:500px;width:90%;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+    <h3 style="margin:0 0 16px 0;color:#8B4513;">Apply for ${job}</h3>
+    <p style="color:#2c3e50;margin:0 0 16px 0;">Company: <strong>${company}</strong></p>
+    <form id="applicationForm">
+      <label style="display:block;margin-bottom:8px;color:#8B4513;font-weight:600;">Full Name</label>
+      <input type="text" id="appName" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:12px;">
+      <label style="display:block;margin-bottom:8px;color:#8B4513;font-weight:600;">Email</label>
+      <input type="email" id="appEmail" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:12px;">
+      <label style="display:block;margin-bottom:8px;color:#8B4513;font-weight:600;">Upload CV/Resume</label>
+      <input type="file" id="appCV" accept=".pdf,.doc,.docx" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:12px;">
+      <label style="display:block;margin-bottom:8px;color:#8B4513;font-weight:600;">Cover Letter (Optional)</label>
+      <textarea id="appCover" rows="4" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;margin-bottom:16px;resize:vertical;"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button type="submit" style="flex:1;padding:10px;background:#8B4513;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Submit Application</button>
+        <button type="button" id="closeModal" style="padding:10px 20px;background:#ccc;color:#333;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Cancel</button>
+      </div>
+    </form>
+  </div>`
+  document.body.appendChild(modal)
+  document.getElementById("closeModal").addEventListener("click",()=>modal.remove())
+  modal.addEventListener("click",e=>{if(e.target===modal)modal.remove()})
+  document.getElementById("applicationForm").addEventListener("submit",e=>{
+    e.preventDefault()
+    const name=document.getElementById("appName").value
+    const email=document.getElementById("appEmail").value
+    const cv=document.getElementById("appCV").files[0]
+    const cover=document.getElementById("appCover").value
+    if(cv){
+      alert(`✓ Application submitted successfully!\\n\\nCompany: ${company}\\nPosition: ${job}\\nName: ${name}\\nEmail: ${email}\\nCV: ${cv.name}`)
+      modal.remove()
+    }else{
+      alert("Please upload your CV/Resume")
+    }
+  })
+}
+
+// Load companies when careers page is clicked
+document.addEventListener("click",e=>{
+  if(e.target.getAttribute("data-page")==="careers"){
+    setTimeout(loadCompaniesAndJobs,100)
+  }
+})
+
+// Job search functionality on home page
+const jobSearchInput=document.getElementById("jobSearchInput")
+const jobSearchResults=document.getElementById("jobSearchResults")
+if(jobSearchInput && jobSearchResults){
+  jobSearchInput.addEventListener("input",e=>{
+    const query=e.target.value.toLowerCase().trim()
+    if(query.length<2){
+      jobSearchResults.innerHTML=""
+      return
+    }
+    const matches=[]
+    mockCompanies.forEach(company=>{
+      const companyMatch=company.name.toLowerCase().includes(query)||company.description.toLowerCase().includes(query)
+      company.jobs.forEach(job=>{
+        const jobMatch=job.title.toLowerCase().includes(query)
+        if(companyMatch||jobMatch){
+          matches.push({company:company.name,job:job.title,location:job.location,type:job.type})
+        }
+      })
+    })
+    if(matches.length===0){
+      jobSearchResults.innerHTML='<p style="color:#2c3e50;font-size:14px;">No jobs found matching your search.</p>'
+      return
+    }
+    let html='<div style="display:grid;gap:8px;">'
+    matches.forEach(match=>{
+      html+=`<div style="background:rgba(255,255,255,0.08);padding:10px;border-radius:8px;border:1px solid rgba(139,69,19,0.15);">
+        <div style="font-weight:600;color:#8B4513;">${match.job}</div>
+        <div style="font-size:13px;color:#2c3e50;margin:2px 0;">${match.company}</div>
+        <div style="font-size:12px;color:#A0522D;">${match.location} • ${match.type}</div>
+        <button class="applyJobBtn" data-company="${match.company}" data-job="${match.job}" style="margin-top:6px;padding:5px 10px;background:#8B4513;color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;font-size:12px;">Apply</button>
+      </div>`
+    })
+    html+='</div>'
+    jobSearchResults.innerHTML=html
+  })
 }
