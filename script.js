@@ -212,9 +212,15 @@ function showApplicationModal(company,job){
 }
 
 // Load companies when careers page is clicked
+let companiesLoaded=false
 document.addEventListener("click",e=>{
   if(e.target.getAttribute("data-page")==="careers"){
-    setTimeout(loadCompaniesAndJobs,100)
+    setTimeout(()=>{
+      if(!companiesLoaded){
+        loadCompaniesAndJobs()
+        companiesLoaded=true
+      }
+    },100)
   }
 })
 
@@ -271,5 +277,61 @@ if(jobSearchInput && jobSearchResults){
 
 // Auto-load companies on page load
 window.addEventListener("load",()=>{
-  setTimeout(loadCompaniesAndJobs,500)
+  setTimeout(()=>{
+    if(document.getElementById("jobsList")&&!companiesLoaded){
+      loadCompaniesAndJobs()
+      companiesLoaded=true
+    }
+  },500)
 })
+
+// CV Upload Handler
+const cvUploadForm=document.getElementById("cvUploadForm")
+const cvUploadMessage=document.getElementById("cvUploadMessage")
+if(cvUploadForm&&cvUploadMessage){
+  cvUploadForm.addEventListener("submit",e=>{
+    e.preventDefault()
+    const name=document.getElementById("cvName").value.trim()
+    const email=document.getElementById("cvEmail").value.trim()
+    const file=document.getElementById("cvFile").files[0]
+    if(!file){
+      cvUploadMessage.style.display="block"
+      cvUploadMessage.style.background="rgba(255,107,107,0.1)"
+      cvUploadMessage.style.color="#ff6b6b"
+      cvUploadMessage.style.border="1px solid #ff6b6b"
+      cvUploadMessage.textContent="✗ Please select a CV file to upload"
+      return
+    }
+    if(file.size>5*1024*1024){
+      cvUploadMessage.style.display="block"
+      cvUploadMessage.style.background="rgba(255,107,107,0.1)"
+      cvUploadMessage.style.color="#ff6b6b"
+      cvUploadMessage.style.border="1px solid #ff6b6b"
+      cvUploadMessage.textContent="✗ File size must be less than 5MB"
+      return
+    }
+    const cvData={name,email,fileName:file.name,fileSize:file.size,uploadDate:new Date().toISOString()}
+    localStorage.setItem("userCV",JSON.stringify(cvData))
+    cvUploadMessage.style.display="block"
+    cvUploadMessage.style.background="rgba(139,69,19,0.1)"
+    cvUploadMessage.style.color="#8B4513"
+    cvUploadMessage.style.border="1px solid #8B4513"
+    cvUploadMessage.innerHTML=`✓ CV uploaded successfully!<br><small>File: ${file.name} (${(file.size/1024).toFixed(1)}KB)</small>`
+    setTimeout(()=>{cvUploadMessage.style.display="none"},5000)
+  })
+  const savedCV=localStorage.getItem("userCV")
+  if(savedCV){
+    try{
+      const cvData=JSON.parse(savedCV)
+      document.getElementById("cvName").value=cvData.name||""
+      document.getElementById("cvEmail").value=cvData.email||""
+      if(cvData.fileName){
+        cvUploadMessage.style.display="block"
+        cvUploadMessage.style.background="rgba(139,69,19,0.05)"
+        cvUploadMessage.style.color="#8B4513"
+        cvUploadMessage.style.border="1px solid rgba(139,69,19,0.2)"
+        cvUploadMessage.innerHTML=`📄 Previously uploaded: <strong>${cvData.fileName}</strong><br><small>Uploaded on ${new Date(cvData.uploadDate).toLocaleDateString()}</small>`
+      }
+    }catch(e){}
+  }
+}
