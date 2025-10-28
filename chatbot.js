@@ -353,7 +353,7 @@ Click on <strong>Careers</strong> in the navigation menu to browse all jobs and 
     
     return `${greeting}, ${name}! 👋
 
-I'm your AI Career Assistant, here to help you navigate your career journey. I can assist with:
+I'm Dawie, your AI Career Assistant, here to help you navigate your career journey. I can assist with:
 
 <ul style="margin: 8px 0; padding-left: 20px;">
   <li>🎯 Career guidance and path recommendations</li>
