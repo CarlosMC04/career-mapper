@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CareerHub</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    section.page { display: none; }
+    section.page.active { display: block; }
+
+    .navbar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .navbar a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .navbar a:hover {
+      background: #11101000 (255, 255, 255, 0.06);
+    }
+    .btn-link {
+      background: #f4f4f400;
+      color: #040404 !important;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="logo-bar">
+      <style>
+  .logo-bar img {
+    width: 50px;   /* adjust as needed */
+    height: 50px;  /* keep square ratio */
+    object-fit: contain;
+    vertical-align: middle;
+  }
+
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* space between logo and text */
+  }
+</style>
+      <img src="Media/Hub.png" alt="HireHub Logo" class="logo">
+    <div class="brand">HireHub</div>
+      
+    </div>
+    <button id="burgerBtn" class="burger" aria-label="Toggle menu">☰</button>
+<style>
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    padding: 5px 10px;
+    width: 250px;
+  }
+
+  .search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 25px;
+    background: transparent;
+  }
+
+  .search-bar button {
+    background: transparent;  /* transparent button */
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #8B4513;  /* brown icon color */
+    font-size: 16px;
+  }
+
+  .search-bar button:hover {
+    color: #A52A2A; /* darker brown on hover */
+  }
+</style>
+
+<div class="search-bar">
+  <input type="text" id="jobSearchInput" placeholder="Search jobs or companies...">
+  <button type="button"><i class="fa fa-search"></i></button>
+  <div id="jobSearchResults" style="position:absolute;top:50px;right:20px;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:400px;max-height:400px;overflow-y:auto;z-index:100;display:none;"></div>
+</div>
+    <nav class="navbar">
+      <a data-page="home">Home</a>
+      <a data-page="careers">Careers</a>
+      <a data-page="resources">Resources</a>
+      <a data-page="about">About</a>
+      <a data-page="rating">Rating</a>
+      <a data-page="login">Login</a>
+      <a data-page="signup" class="btn-link">Sign Up</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <!-- HOME / PROFILE -->
+    <section id="home" class="page">
+      <div class="panel panel-left" id="leftPanel">
+        <form id="profileForm" class="form" novalidate>
+          <h2>Student Profile</h2>
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required>
+          <label for="degree">Degree Program</label>
+          <input id="degree" name="degree" type="text" placeholder="e.g. Computer Science">
+          <label for="interests">Interests (comma separated)</label>
+          <input id="interests" name="interests" type="text" placeholder="e.g. data, design, web">
+          <label for="skills">Skills (comma separated)</label>
+          <input id="skills" name="skills" type="text" placeholder="e.g. SQL, Excel, JavaScript">
+          <div class="form-row">
+            <button id="submitBtn" type="submit">Find Careers</button>
+            <button id="saveBtn" type="button">Save Profile</button>
+          </div>
+        </form>
+        <div class="help">
+          <p>Tip: enter interests/skills separated by commas. Results are instant and client-side.</p>
+        </div>
+      </div>
+
+      <div class="panel panel-right">
+        <div class="chart-card">
+          <canvas id="skillChart" width="400" height="160" aria-label="Skill gap chart"></canvas>
+        </div>
+        <div class="results" id="results" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- SIGN UP -->
+    <section id="signup" class="page panel panel-left">
+      <form class="form" id="signupForm">
+        <h2>Sign Up</h2>
+        <label for="signupFullName">Full Name</label>
+        <input type="text" id="signupFullName" placeholder="John Doe" required>
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" placeholder="john@example.com" required>
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required minlength="6">
+        <label for="signupConfirm">Confirm Password</label>
+        <input type="password" id="signupConfirm" placeholder="Re-enter password" required>
+        <label for="signupFaculty">Faculty</label>
+        <input type="text" id="signupFaculty" placeholder="e.g. IT, Science, Commerce">
+        <div class="form-row">
+          <button type="submit" id="signupBtn">Create Account</button>
+        </div>
+        <div id="signupMessage" style="margin-top:10px;color:var(--accent);"></div>
+        <p style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center;">
+          Already have an account? <a href="#" data-page="login" style="color:var(--accent);text-decoration:none;">Login</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login" class="page active panel panel-left">
+      <form class="form" id="loginForm">
+        <h2>Login</h2>
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" placeholder="john@example.com" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        <div style="text-align:right;margin-top:4px;margin-bottom:8px;">
+          <a href="#" data-page="forgot" style="color:var(--accent);text-decoration:none;font-size:13px;">Forgot Password?</a>
+        </div>
+        <div class="form-row">
+          <button type="submit" id="loginBtn">Log In</button>
+        </div>
+        <div id="loginMessage" style="margin-top:10px;color:var(--accent);"></div>
+        <p style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center;">
+          Don't have an account? <a href="#" data-page="signup" style="color:var(--accent);text-decoration:none;">Sign Up</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- CAREERS -->
+    <section id="careers" class="page panel panel-right">
+      <h2 style="color: var(--accent);">Available Jobs</h2>
+      <p>Browse job opportunities and apply directly.</p>
+      <div id="jobsList" class="results"></div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section id="resources" class="page panel panel-right">
+      <h2 style="color: var(--accent);">Learning Resources</h2>
+      <p>Curated tutorials, courses, and certifications to help you grow.</p>
+      
+      <!-- CV Upload Section -->
+      <div style="margin-top:20px;padding:20px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(139,69,19,0.2);">
+        <h3 style="margin:0 0 12px 0;color:#8B4513;">📄 Upload Your CV/Resume</h3>
+        <p style="color:#2c3e50;font-size:14px;margin:0 0 16px 0;">Keep your CV ready for quick applications to companies</p>
+        <form id="cvUploadForm" style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="display:block;margin-bottom:6px;color:#8B4513;font-weight:600;">Full Name</label>
+            <input type="text" id="cvName" required style="width:100%;padding:10px;border:1px solid rgba(139,69,19,0.3);border-radius:8px;background:rgba(255,255,255,0.9);color:#2c3e50;">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:6px;color:#8B4513;font-weight:600;">Email Address</label>
+            <input type="email" id="cvEmail" required style="width:100%;padding:10px;border:1px solid rgba(139,69,19,0.3);border-radius:8px;background:rgba(255,255,255,0.9);color:#2c3e50;">
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:6px;color:#8B4513;font-weight:600;">Upload CV/Resume</label>
+            <input type="file" id="cvFile" accept=".pdf,.doc,.docx" required style="width:100%;padding:10px;border:1px solid rgba(139,69,19,0.3);border-radius:8px;background:rgba(255,255,255,0.9);color:#2c3e50;">
+            <small style="color:#A0522D;font-size:12px;display:block;margin-top:4px;">Accepted formats: PDF, DOC, DOCX (Max 5MB)</small>
+          </div>
+          <button type="submit" style="padding:12px;background:#8B4513;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">Save CV to Profile</button>
+        </form>
+        <div id="cvUploadMessage" style="margin-top:12px;padding:10px;border-radius:6px;display:none;"></div>
+      </div>
+
+      <!-- CV Templates Section -->
+      <div style="margin-top:30px;padding:20px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(139,69,19,0.2);">
+        <h3 style="margin:0 0 12px 0;color:#8B4513;">📋 Professional CV Templates</h3>
+        <p style="color:#2c3e50;font-size:14px;margin:0 0 20px 0;">Download free professional CV templates to get started</p>
+        
+        <div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;">
+          <!-- Minimalist CV Templates -->
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#8B4513;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">CV</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Minimalist CV 1</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Clean & Professional</p>
+              <a href="cv-templates/Minimalist CV Resume.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#2c3e50;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">CV</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Minimalist CV 2</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Modern Design</p>
+              <a href="cv-templates/Minimalist CV Resume (1).pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#A0522D;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">CV</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Minimalist CV 3</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Elegant Layout</p>
+              <a href="cv-templates/Minimalist CV Resume (2).pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#5a76b0;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">CV</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Minimalist CV 4</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Simple & Clear</p>
+              <a href="cv-templates/Minimalist CV Resume (3).pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#8B4513;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">CV</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Minimalist CV 5</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Professional Style</p>
+              <a href="cv-templates/Minimalist CV Resume (4).pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <!-- Industry-Specific Templates -->
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#28a745;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">💼</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Retail Cashier</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Retail Industry</p>
+              <a href="cv-templates/2243782-full-time-retail-cashier-resume-example.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#dc3545;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">🏥</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Nursing Student</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Healthcare</p>
+              <a href="cv-templates/4317071-emergency-room-nursing-student-resume-example.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#007bff;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">💻</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Network Engineer</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">IT/Tech</p>
+              <a href="cv-templates/507328-entry-level-network-engineer-resume-example.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#6f42c1;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">📊</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Product Owner</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Agile/PM</p>
+              <a href="cv-templates/7194683-agile-product-owner-resume.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#fd7e14;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">📦</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Warehouse Manager</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Logistics</p>
+              <a href="cv-templates/8170174-assistant-warehouse-manager.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+
+          <div class="cv-template-card">
+            <div style="background:#f9f9f9;border:2px solid #ddd;border-radius:8px;padding:12px;min-width:200px;text-align:center;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;" onmouseover="this.style.transform='translateY(-5px)';this.style.boxShadow='0 6px 20px rgba(139,69,19,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
+              <div style="background:#e83e8c;color:#fff;padding:40px 20px;border-radius:6px;margin-bottom:10px;font-size:18px;font-weight:600;">💃</div>
+              <h4 style="margin:8px 0;color:#8B4513;font-size:14px;">Dancer Resume</h4>
+              <p style="font-size:12px;color:#666;margin:4px 0 12px 0;">Arts/Performance</p>
+              <a href="cv-templates/8919987-beginner-dancer-resume-example.pdf" download style="display:inline-block;padding:8px 16px;background:#8B4513;color:#fff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">Download PDF</a>
+            </div>
+          </div>
+        </div>
+        
+        <p style="margin-top:16px;font-size:13px;color:#666;text-align:center;">💡 Tip: Download a template, customize it with your information, and upload it above!</p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="page panel panel-right">
+      <h2 style="color: var(--accent); font-size: 2.3rem;">Empowering Futures, One Career at a Time</h2>
+      <div style="font-size: 1.15rem;">
+        <p>HireHub has collaborated with tertiary institutions and industry leaders to encourage and ensure students and graduates have a chance at innovation and growth in career paths. The gap between academia and the industry world is where the right exposure, guidance, and access to opportunities is provided by our platform. The system recognizes the talents in the different faculties and joins them with the suited organizations that give mentorships, internships, and jobs.</p>
+        <h3 style="margin-top:1.5em; color: var(--accent); font-size: 1.3rem;">Values</h3>
+        <ul style="margin-bottom:1.2em;">
+          <li><strong>Innovation:</strong> Fostering ideologies that cause change.</li>
+          <li><strong>Collaboration:</strong> Linking faculties, students, graduates, and working with organizations.</li>
+          <li><strong>Growth:</strong> Preparing students and graduates for career paths.</li>
+          <li><strong>Excellence:</strong> Guaranteeing quality matches talent with employers.</li>
+        </ul>
+        <h3 style="color: var(--accent); font-size: 1.3rem;">Create Profiles</h3>
+        <p>HireHub has created a portal where students can create their student profile and fill it out and submit it and use it to search for jobs, whether full-time or part-time. Jobs that will align to the qualifications studied and their interests and skills.</p>
+      </div>
+    </section>
+
+    <!-- FORGOT PASSWORD -->
+    <section id="forgot" class="page panel panel-left">
+      <form class="form" id="forgotForm">
+        <h2>Forgot Password</h2>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Enter your email address and we'll send you instructions to reset your password.</p>
+        <label for="forgotEmail">Email</label>
+        <input type="email" id="forgotEmail" placeholder="john@example.com" required>
+        <div class="form-row">
+          <button type="submit" id="forgotBtn">Send Reset Link</button>
+        </div>
+        <div id="forgotMessage" style="margin-top:10px;color:var(--accent);"></div>
+        <p style="margin-top:12px;font-size:13px;color:var(--muted);text-align:center;">
+          Remember your password? <a href="#" data-page="login" style="color:var(--accent);text-decoration:none;">Login</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div style="max-width:1200px;margin:0 auto;padding:20px;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px;margin-bottom:16px;">
+        <div style="flex:1;min-width:200px;">
+          <h4 style="margin:0 0 8px 0;color:#8B4513;">HireHub</h4>
+          <p style="margin:0;font-size:13px;color:#93a3b2;">Your career mapping companion</p>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <h4 style="margin:0 0 8px 0;color:#8B4513;">Contact Us</h4>
+          <p style="margin:4px 0;font-size:13px;color:#93a3b2;">📧 Email: support@hirehub.com</p>
+          <p style="margin:4px 0;font-size:13px;color:#93a3b2;">📞 Phone: +1 (555) 123-4567</p>
+          <p style="margin:4px 0;font-size:13px;color:#93a3b2;">📍 Location: 123 Career St, Tech City</p>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <h4 style="margin:0 0 8px 0;color:#8B4513;">Quick Links</h4>
+          <p style="margin:4px 0;"><a href="#" data-page="about" style="color:#93a3b2;text-decoration:none;font-size:13px;">About Us</a></p>
+          <p style="margin:4px 0;"><a href="#" data-page="careers" style="color:#93a3b2;text-decoration:none;font-size:13px;">Browse Jobs</a></p>
+          <p style="margin:4px 0;"><a href="#" data-page="resources" style="color:#93a3b2;text-decoration:none;font-size:13px;">Resources</a></p>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(147,163,178,0.2);padding-top:12px;text-align:center;">
+        <p style="margin:0;font-size:13px;color:#93a3b2;">&copy; 2025 HireHub • All Rights Reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Dark Mode Toggle -->
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+    <span id="themeIcon">🌙</span>
+  </button>
+
+  <!-- AI Chatbot Widget -->
+  <div id="chatbotWidget" class="chatbot-widget">
+    <button id="chatbotToggle" class="chatbot-toggle" aria-label="Open AI Assistant">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </button>
+    
+    <div id="chatbotWindow" class="chatbot-window" style="display: none;">
+      <div class="chatbot-header">
+        <div>
+          <h3 style="margin: 0; font-size: 16px; color: #fff;">🤖 Dawie - Your AI Career Assistant</h3>
+          <p style="margin: 2px 0 0 0; font-size: 12px; color: rgba(255,255,255,0.8);">Ask me anything about careers!</p>
+        </div>
+        <button id="chatbotClose" class="chatbot-close" aria-label="Close chat">×</button>
+      </div>
+      
+      <div id="chatbotMessages" class="chatbot-messages">
+        <div class="chatbot-message bot-message">
+          <div class="message-content">
+            👋 Hi! I'm Dawie, your AI Career Assistant. I can help you with:
+            <ul style="margin: 8px 0; padding-left: 20px;">
+              <li>Career advice and guidance</li>
+              <li>Job search tips</li>
+              <li>Resume and interview help</li>
+              <li>Skill development recommendations</li>
+            </ul>
+            How can I assist you today?
+          </div>
+        </div>
+      </div>
+      
+      <div class="chatbot-input-area">
+        <input type="text" id="chatbotInput" class="chatbot-input" placeholder="Type your message..." />
+        <button id="chatbotSend" class="chatbot-send" aria-label="Send message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+    
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+      body.classList.add('dark-mode');
+      themeIcon.textContent = '☀️';
+    }
+    
+    // Toggle theme
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+      }
+    });
+    
+    // Authentication and page switching logic
+    
+    // Check if user is logged in on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = localStorage.getItem('authToken') || localStorage.getItem('isLoggedIn');
+      
+      // Check for hash in URL (e.g., /app#login or /app#signup)
+      const hash = window.location.hash.substring(1); // Remove the # symbol
+      
+      if (hash && document.getElementById(hash)) {
+        // If there's a valid hash, show that page
+        document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(hash).classList.add('active');
+      } else if (isLoggedIn) {
+        // User is logged in, show home page
+        document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+        document.getElementById('home').classList.add('active');
+        
+        // Update navbar to show logout
+        updateNavbarForLoggedInUser();
+      } else {
+        // User not logged in, show login page (already default)
+        document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+        document.getElementById('login').classList.add('active');
+      }
+      
+      // Update navbar if logged in
+      if (isLoggedIn) {
+        updateNavbarForLoggedInUser();
+      }
+    });
+    
+    // Update navbar for logged in users
+    function updateNavbarForLoggedInUser() {
+      const loginLink = document.querySelector('[data-page="login"]');
+      const signupLink = document.querySelector('[data-page="signup"]');
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      
+      if (loginLink && currentUser.name) {
+        loginLink.textContent = `Hi, ${currentUser.name}`;
+        loginLink.style.pointerEvents = 'none';
+      }
+      
+      if (signupLink) {
+        signupLink.textContent = 'Logout';
+        signupLink.setAttribute('data-page', 'logout');
+        signupLink.classList.remove('btn-link');
+        signupLink.style.background = '#ff6b6b';
+      }
+    }
+    
+    // Page switching logic
+    document.querySelectorAll('.navbar a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const pageId = link.getAttribute('data-page');
+        
+        // Handle logout
+        if (pageId === 'logout') {
+          e.preventDefault();
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('currentUser');
+          alert('Logged out successfully!');
+          location.reload();
+          return;
+        }
+        
+        // Check if user is trying to access protected pages
+        const protectedPages = ['home', 'careers', 'resources', 'about', 'rating'];
+        const isLoggedIn = localStorage.getItem('authToken') || localStorage.getItem('isLoggedIn');
+        
+        if (protectedPages.includes(pageId) && !isLoggedIn) {
+          e.preventDefault();
+          alert('Please login to access this page');
+          document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+          document.getElementById('login').classList.add('active');
+          return;
+        }
+        
+        // Switch to requested page
+        document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+      });
+    });
+  </script>
+  <script defer src="script.js"></script>
+  <script defer src="api.js"></script>
+  <script defer src="chatbot.js"></script>
+</body>
+</html>
