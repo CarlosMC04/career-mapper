@@ -97,7 +97,11 @@ app.get("/api/applications", auth, (req, res) => {
   );
 });
 
-app.get("*", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+// Serve main app
+app.get("/app", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+
+// Serve landing page as default (must be last)
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "landing.html")));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`SQLite Server running on port ${PORT}`));

@@ -12,7 +12,17 @@ services:
         generateValue: true
       - key: DB_PATH
         value: /data/db.sqlite
+      - key: PORT
+        value: 10000
     disk:
       name: data
       mountPath: /data
       sizeGB: 1
+    # Static files and routes
+    routes:
+      - type: rewrite
+        source: /
+        destination: /landing.html
+      - type: rewrite
+        source: /app
+        destination: /index.html

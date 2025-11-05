@@ -87,6 +87,23 @@ document.addEventListener("click",e=>{
     const profile=getCurrentProfile()
     const scored=scoreProfile(profile,careerObj)
     updateChartForCareer(scored)
+
+    // Show modal with missing skills
+    const existingModal = document.getElementById("gapModal")
+    if(existingModal) existingModal.remove()
+    const modal = document.createElement("div")
+    modal.id = "gapModal"
+    modal.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;"
+    const missingSkills = scored.missing
+    modal.innerHTML = `<div style='background:#fff;padding:32px 24px;border-radius:14px;max-width:350px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.2);text-align:center;position:relative;'>
+      <h3 style='color:#8B4513;margin-bottom:10px;'>Skill Gaps for ${careerObj.title}</h3>
+      <p style='font-size:15px;margin-bottom:18px;'>${missingSkills.length === 0 ? "You have all the required skills for this career!" : "You need to develop the following skills:"}</p>
+      ${missingSkills.length > 0 ? `<ul style='list-style:none;padding:0;margin-bottom:18px;'>${missingSkills.map(s => `<li style='background:#f4f4f4;margin:6px 0;padding:7px 0;border-radius:6px;color:#8B4513;font-weight:600;'>${s}</li>`).join("")}</ul>` : ""}
+      <button id='closeGapModal' style='margin-top:10px;padding:8px 20px;background:#8B4513;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;'>Close</button>
+    </div>`
+    document.body.appendChild(modal)
+    document.getElementById("closeGapModal").onclick = () => modal.remove()
+    modal.onclick = e => { if(e.target === modal) modal.remove() }
   }
 })
 if(form){

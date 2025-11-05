@@ -337,8 +337,19 @@
 
     <!-- ABOUT -->
     <section id="about" class="page panel panel-right">
-      <h2 style="color: var(--accent);">About CareerHub</h2>
-      <p>CareerHub is a student-focused tool designed to align your skills and interests with the right career path. Built for fast and secure offline use.</p>
+      <h2 style="color: var(--accent); font-size: 2.3rem;">Empowering Futures, One Career at a Time</h2>
+      <div style="font-size: 1.15rem;">
+        <p>HireHub has collaborated with tertiary institutions and industry leaders to encourage and ensure students and graduates have a chance at innovation and growth in career paths. The gap between academia and the industry world is where the right exposure, guidance, and access to opportunities is provided by our platform. The system recognizes the talents in the different faculties and joins them with the suited organizations that give mentorships, internships, and jobs.</p>
+        <h3 style="margin-top:1.5em; color: var(--accent); font-size: 1.3rem;">Values</h3>
+        <ul style="margin-bottom:1.2em;">
+          <li><strong>Innovation:</strong> Fostering ideologies that cause change.</li>
+          <li><strong>Collaboration:</strong> Linking faculties, students, graduates, and working with organizations.</li>
+          <li><strong>Growth:</strong> Preparing students and graduates for career paths.</li>
+          <li><strong>Excellence:</strong> Guaranteeing quality matches talent with employers.</li>
+        </ul>
+        <h3 style="color: var(--accent); font-size: 1.3rem;">Create Profiles</h3>
+        <p>HireHub has created a portal where students can create their student profile and fill it out and submit it and use it to search for jobs, whether full-time or part-time. Jobs that will align to the qualifications studied and their interests and skills.</p>
+      </div>
     </section>
 
     <!-- FORGOT PASSWORD -->
@@ -466,7 +477,14 @@
     window.addEventListener('DOMContentLoaded', () => {
       const isLoggedIn = localStorage.getItem('authToken') || localStorage.getItem('isLoggedIn');
       
-      if (isLoggedIn) {
+      // Check for hash in URL (e.g., /app#login or /app#signup)
+      const hash = window.location.hash.substring(1); // Remove the # symbol
+      
+      if (hash && document.getElementById(hash)) {
+        // If there's a valid hash, show that page
+        document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(hash).classList.add('active');
+      } else if (isLoggedIn) {
         // User is logged in, show home page
         document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
         document.getElementById('home').classList.add('active');
@@ -477,6 +495,11 @@
         // User not logged in, show login page (already default)
         document.querySelectorAll('.page').forEach(sec => sec.classList.remove('active'));
         document.getElementById('login').classList.add('active');
+      }
+      
+      // Update navbar if logged in
+      if (isLoggedIn) {
+        updateNavbarForLoggedInUser();
       }
     });
     
